@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers/index";
 
 import { AiOutlineGoogle, AiFillGithub } from "react-icons/ai";
@@ -17,26 +17,14 @@ const OAuthButtonGroup: React.FC<OAuthButtonGroupProps> = () => {
 
    return (
       <div className="join join-vertical gap-4 mb-5 w-full">
-         <Button
-            variant="primary"
-            className="p-3 h-12"
-            onClick={() => signInWithProvider("google")}
-         >
+         <Button variant="primary" className="p-3 h-12" onClick={() => signInWithProvider("google")}>
             <AiOutlineGoogle className="w-6 h-6" />
             <span>Continue With Google</span>
          </Button>
 
-         <Button
-            variant="neutral"
-            className="p-3 h-12"
-            onClick={() => signInWithProvider("github")}
-         >
+         <Button variant="neutral" className="p-3 h-12" onClick={() => signInWithProvider("github")}>
             <AiFillGithub className="w-6 h-6" />
             <span>Continue With Github</span>
-         </Button>
-
-         <Button variant="error" className="p-3 h-12" onClick={() => signOut()}>
-            Sign out
          </Button>
       </div>
    );

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { AuthProvider, ToasterProvider } from "@src/context";
+import { LoadingModal } from "@src/components/modal";
 
 import "./globals.css";
 
@@ -18,7 +19,9 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
       <html lang="en" data-theme="light">
          <body className={inter.className}>
             <AuthProvider>
-               <ToasterProvider>{children}</ToasterProvider>
+               <ToasterProvider>
+                  <LoadingModal>{children}</LoadingModal>
+               </ToasterProvider>
             </AuthProvider>
          </body>
       </html>
