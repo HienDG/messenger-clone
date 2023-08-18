@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import ConversationList from "./components/ConversationList";
 
@@ -10,7 +10,7 @@ const layout: React.FC<React.PropsWithChildren> = async ({ children }) => {
    return (
       <div className="h-full">
          <ConversationList initialConversations={conversations} />
-         <div>{children}</div>
+         <Fragment>{children}</Fragment>
       </div>
    );
 };

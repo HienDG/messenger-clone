@@ -9,7 +9,7 @@ export const POST = async (request: Request) => {
       const currentUser = await getCurrentUser();
 
       // check if user logged in
-      if (!currentUser) throw new Error("Unauthorized");
+      if (!currentUser) return Response.json({ message: "Unauthorized" }, { status: 401 });
 
       const data = await request.json();
 

@@ -3,3 +3,4 @@ export { default as getCurrentUser } from "./getCurrentUser";
 export { default as getAllPeople } from "./getAllPeople";
 export { default as getConversationById } from "./getConversationById";
 export { default as getConversations } from "./getConversations";
+export { default as getAllMessageById } from "./getAllMessageById";

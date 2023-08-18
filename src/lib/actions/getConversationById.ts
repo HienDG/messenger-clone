@@ -8,13 +8,18 @@ const getConversationById = async (cid: string) => {
       // check if user not logged in
       if (!currentUser) throw new Error("Unauthorized");
 
+      // get conversation record by id and populate users
       const conversation = await prisma_db.conversation.findUnique({
          where: {
             id: cid,
          },
+
+         include: {
+            users: true,
+         },
       });
 
-      // check conversation does exist
+      // check conversation does not exist
       if (!conversation) throw new Error("Conversation does not exist");
 
       return conversation;

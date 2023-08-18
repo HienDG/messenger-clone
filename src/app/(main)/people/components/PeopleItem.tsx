@@ -42,7 +42,7 @@ const PeopleItem: React.FC<PeopleItemProps> = ({ item }) => {
             <div className="focus:outline-none">
                <span className="absolute inset-0" aria-hidden="true" />
                <div className="flex justify-between items-center mb-1">
-                  <p className="text-sm font-bold text-neutral-content">{item.name}</p>
+                  <p className="text-sm font-bold text-[hsl(var(--bc)/1)]">{item.name}</p>
                </div>
             </div>
          </div>

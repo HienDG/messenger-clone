@@ -67,7 +67,7 @@ const ConversationItem: React.FC<ConversationItemProps> = ({ conversation, selec
             <div className="focus:outline-none">
                <span className="absolute inset-0" aria-hidden="true" />
                <div className="flex justify-between items-center mb-1">
-                  <p className="text-md font-medium text-neutral-content">{otherUser.name}</p>
+                  <p className="text-md font-bold text-[hsl(var(--bc)/1)]">{otherUser.name}</p>
                </div>
                <p className={merge(`truncate text-sm opacity-80`)}>{lastMessageText}</p>
             </div>
