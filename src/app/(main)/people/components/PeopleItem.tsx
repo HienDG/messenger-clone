@@ -22,6 +22,7 @@ const PeopleItem: React.FC<PeopleItemProps> = ({ item }) => {
    const handleNavigate = useCallback(async () => {
       onOpen(); // show loading modal
       try {
+         // make post request to api/conversation
          const { data } = await axios.post("/api/conversation", { userId: item.id });
 
          router.push(`${CONVERSATION_URL}/${data.data.id}`);

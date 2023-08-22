@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { getCurrentUser } from "@src/lib/actions";
 import prisma_db from "@src/lib/prisma_db";
+import pusherServer from "@src/lib/pusher_server";
 
 export const POST = async (request: Request) => {
    try {
@@ -47,7 +48,7 @@ export const POST = async (request: Request) => {
       });
 
       // update current conversation
-      await prisma_db.conversation.update({
+      const updatedConversation = await prisma_db.conversation.update({
          where: {
             id: conversationId,
          },
@@ -64,6 +65,17 @@ export const POST = async (request: Request) => {
             users: true,
             messages: { include: { seen: true } },
          },
+      });
+
+      await pusherServer.trigger(conversationId, "message:new", newMessage);
+
+      const lastMessage = updatedConversation.messages[updatedConversation.messages.length - 1];
+
+      updatedConversation.users.map((user) => {
+         pusherServer.trigger(user.email as string, "conversation:update", {
+            id: conversationId,
+            messages: [lastMessage],
+         });
       });
 
       return Response.json(newMessage);

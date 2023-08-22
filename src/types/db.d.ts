@@ -5,6 +5,8 @@ export type ExtendMessageType = Message & {
    seen: User[];
 };
 
+export type ExtendConversationWithUsers = Omit<ExtendConversationType, "messages">;
+
 export type ExtendConversationType = Conversation & {
    users: User[];
    messages: ExtendMessageType[];

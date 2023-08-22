@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import { CldUploadButton } from "next-cloudinary";
 import toaster from "react-hot-toast";
-import { useSession } from "next-auth/react";
 
 import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
 
 import { FormController, InputField, Button } from "@src/components/ui";
 
-import { useSlug } from "@src/hooks";
+import { useSlug, useOtherUser } from "@src/hooks";
 
 import { ExtendConversationType } from "@src/types/db";
 
@@ -25,15 +24,8 @@ interface FormProps {
 const Form: React.FC<FormProps> = ({ conversation }) => {
    const slug = useSlug();
    const router = useRouter();
-   const session = useSession();
 
-   const otherUser = useMemo(() => {
-      const currentUserEmail = session.data?.user?.email;
-
-      const otherUser = conversation.users.filter((user) => user.email !== currentUserEmail);
-
-      return otherUser[0];
-   }, [conversation.users, session.data?.user?.email]);
+   const otherUser = useOtherUser(conversation);
 
    const {
       register,

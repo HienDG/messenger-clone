@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import prisma_db from "@src/lib/prisma_db";
 import { getCurrentUser } from "@src/lib/actions";
+import pusherServer from "@src/lib/pusher_server";
 
 export const POST = async (request: Request) => {
    try {
@@ -59,6 +60,15 @@ export const POST = async (request: Request) => {
          include: {
             users: true,
          },
+      });
+
+      // Update all connections with new conversation
+      newConversation.users.map((user) => {
+         if (user.email) {
+            pusherServer.trigger(user.email, "conversation:new", newConversation).catch((err) => {
+               console.error(err);
+            });
+         }
       });
 
       return Response.json({

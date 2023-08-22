@@ -1,14 +1,17 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import find from "lodash.find";
+import { useRouter } from "next/navigation";
 
 import { MdOutlineGroupAdd } from "react-icons/md";
-import { AiOutlineSearch } from "react-icons/ai";
 
 import ConversationItem from "./ConversationItem";
 
 import { useSlug } from "@src/hooks";
 import { merge } from "@src/utils";
+import pusherClient from "@src/lib/pusher_client";
 import { ExtendConversationType } from "@src/types/db";
 
 interface ConversationListProps {
@@ -16,9 +19,54 @@ interface ConversationListProps {
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({ initialConversations }) => {
+   const session = useSession();
+   const router = useRouter();
+
+   const [conversations, setConversations] =
+      useState<ExtendConversationType[]>(initialConversations);
+
    const slug = useSlug();
 
    const isOpen = useMemo(() => !!slug, [slug]);
+
+   const email = useMemo(() => {
+      return session.data?.user?.email;
+   }, [session.data?.user?.email]);
+
+   useEffect(() => {
+      // check if usr not logged in
+      if (!email) return;
+
+      pusherClient.subscribe(email);
+
+      const newConversationHandler = (cv: ExtendConversationType) => {
+         setConversations((prevCv) => {
+            if (find(prevCv, { id: cv.id })) {
+               return prevCv;
+            }
+
+            return [cv, ...prevCv];
+         });
+      };
+
+      const updateConversationHandler = (cv: ExtendConversationType) => {
+         setConversations((prevCvs) => {
+            return prevCvs.map((prevCv) => {
+               if (prevCv.id === cv.id) {
+                  return {
+                     ...prevCv,
+                     messages: cv.messages,
+                  };
+               }
+
+               return { ...prevCv };
+            });
+         });
+      };
+
+      pusherClient.bind("conversation:new", newConversationHandler);
+      pusherClient.bind("conversation:update", updateConversationHandler);
+   }, [email, router]);
 
    return (
       <aside
@@ -39,35 +87,9 @@ const ConversationList: React.FC<ConversationListProps> = ({ initialConversation
                </div>
             </div>
 
-            {/* Search bar */}
-            <div className="pt-[6px] pb-3 relative">
-               <div>
-                  <div className="flex flex-col w-full">
-                     <div className="px-4">
-                        <div className="flex items-center w-full">
-                           <label
-                              htmlFor=""
-                              className="flex relative rounded-full items-stretch min-h-[36px] bg-base-300 flex-1"
-                           >
-                              <span className="flex items-center pl-2.5">
-                                 <AiOutlineSearch />
-                              </span>
-
-                              <input
-                                 type="text"
-                                 className="h-9 flex-1 pt-[7px] px-[6px] pb-[9px] outline-none border-none bg-transparent focus:outline-0 focus:ring-0"
-                                 placeholder="Search Messenger"
-                              />
-                           </label>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-
             {/* User list */}
             <div className="space-y-2">
-               {initialConversations.map((cv) => (
+               {conversations.map((cv) => (
                   <ConversationItem conversation={cv} key={cv.id} selected={slug === cv.id} />
                ))}
             </div>

@@ -40,10 +40,9 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
       try {
          await axios.post("/api/auth/register", { email, password, username, confirmPassword });
 
-         // if registration is successful, login with email, password
          const res = await signIn("credentials", { email, password, redirect: false });
 
-         // if login is successful, navigate to home page
+         // if login not success
          if (!res?.ok) throw new Error(res?.error || "something went wrong");
 
          reset(); // clear data input

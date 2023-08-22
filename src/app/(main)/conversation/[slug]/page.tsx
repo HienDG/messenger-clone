@@ -32,7 +32,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = async ({ params })
       <div className="lg:pl-80 h-full">
          <div className="flex flex-col bg-base-200 h-screen">
             <Header conversation={conversation} />
-            <Body initialMessages={messages} />
+            <Body initialMessages={messages} conversation={conversation} />
             <Form conversation={conversation} />
          </div>
       </div>

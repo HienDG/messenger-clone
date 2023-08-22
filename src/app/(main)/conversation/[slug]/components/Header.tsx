@@ -1,32 +1,25 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { Fragment } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 
 import { HiChevronLeft } from "react-icons/hi";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 
 import { Avatar } from "@src/components/ui";
+import { ProfileDrawer } from "@src/components/modal";
 
-import { ExtendConversationType } from "@src/types/db";
-
-type ExtendConversationWithUsers = Omit<ExtendConversationType, "messages">;
+import { useModalStore, useOtherUser } from "@src/hooks";
+import { ExtendConversationWithUsers } from "@src/types/db";
 
 interface HeaderProps {
    conversation: ExtendConversationWithUsers;
 }
 
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
-   const session = useSession();
+   const { view, onOpen } = useModalStore();
 
-   const otherUser = useMemo(() => {
-      const currentUserEmail = session.data?.user?.email;
-
-      const otherUser = conversation.users.filter((user) => user.email !== currentUserEmail);
-
-      return otherUser[0];
-   }, [conversation.users, session.data?.user?.email]);
+   const otherUser = useOtherUser(conversation);
 
    return (
       <div className="bg-base-100 w-full flex border-b sm:px-4 py-3 px-4 border-b-[hsl(var(--bc)/.2)] lg:px-6 justify-between items-center shadow-sm">
@@ -48,8 +41,11 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             <HiEllipsisHorizontal
                size={32}
                className="text-info cursor-pointer hover:text-primary transition"
+               onClick={() => onOpen("profile")}
             />
          </div>
+
+         <Fragment>{view === "profile" && <ProfileDrawer data={conversation} />}</Fragment>
       </div>
    );
 };

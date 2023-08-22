@@ -21,7 +21,7 @@ interface MessageBoxProps {
 const MessageBox: React.FC<MessageBoxProps> = ({ message, isLast = false }) => {
    const session = useSession();
 
-   const { onOpen } = useModalStore();
+   const { onOpen, view } = useModalStore();
 
    const isOwn = useMemo(() => {
       return session.data?.user?.email === message.sender.email;
@@ -77,7 +77,9 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message, isLast = false }) => {
             </Fragment>
          </div>
 
-         <Fragment>{message.image && <ImageModal src={message.image} />}</Fragment>
+         <Fragment>
+            {message.image && view === "image" && <ImageModal src={message.image} />}
+         </Fragment>
       </div>
    );
 };

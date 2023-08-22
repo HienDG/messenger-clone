@@ -16,7 +16,7 @@ const PeopleList: React.FC<PeopleListProps> = ({ items }) => {
             </div>
          </div>
 
-         <div className="">
+         <div className="space-y-2">
             {items.map((item) => (
                <PeopleItem key={item.id} item={item} />
             ))}
